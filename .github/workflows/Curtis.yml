@@ -1,0 +1,243 @@
+name: echo
+on:   
+  push: 
+  pull_request: 
+
+jobs:
+  A1:
+    runs-on: macos-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: A1-Build
+      uses: actions/checkout@v1
+    - name: Main
+      run: date
+  B1:
+    needs: A1
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: B1-Build
+      uses: actions/checkout@v1
+    - name: Main
+      run: date
+  B2:
+    needs: B1
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: B2-Build
+      uses: actions/checkout@v1
+    - name: Main
+      run: date
+  C1:
+    needs: B2
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: C1-build
+      run: echo hello
+     
+  C2:
+    needs: [B2]
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: C2-build
+      run: echo hello
+  C3:
+    needs: [B2]
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: C3-build
+      run: echo hello
+  C4:
+    needs: [B2]
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: C4-build
+      run: echo hello
+  C5:
+    needs: [B2]
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 20
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2]
+        flag: [A, B, C, D, E, F, G, H, I, J]
+    env:
+        NUM_JOBS: 20
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: C5-build
+      run: echo hello
+  OKE-1:
+    needs: [A1, B1, B2, C1, C2, C3, C4, C5]
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Check Failure
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        run: exit 1
+      - name: Success
+        if: ${{ success() }}
+        run: echo "selesai"
+  D1:
+    needs: OKE-1
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 225
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
+        flag: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y]
+    env:
+        NUM_JOBS: 225
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: D1-Build
+      run: echo hello
+  D2:
+    needs: [OKE-1]
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 225
+      fail-fast: false
+      matrix:
+        go: [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9]
+        flag: [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y]
+    env:
+        NUM_JOBS: 225
+        JOB: ${{ matrix.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: D2-Build
+      run: echo hello
+  OKE-2:
+    needs: [A1, B1, B2, C2, C3, C4, OKE-1, D1, D2]
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Check Failure
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        run: exit 1
+      - name: Success
+        if: ${{ success() }}
+        run: echo "selesai"
